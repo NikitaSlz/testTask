@@ -1,4 +1,6 @@
-package com.example.testTask.model;
+package com.example.testTask.service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -7,14 +9,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Map.Entry.*;
-
-public class CharCounter {
+@Service
+public class CharCounterService {
     private Map<Character, Integer> map;
-
-    public CharCounter(Map<Character, Integer> map) {
-        this.map = map;
-    }
-    public CharCounter() {
+    public CharCounterService() {
 
     }
 
@@ -26,16 +24,17 @@ public class CharCounter {
         this.map = map;
     }
 
-    public boolean checkString(String str) {
-        str = str.replaceAll("\\s", "");
-        if(str != null && str.chars().allMatch(Character::isLetter)) {
-            createMap(str);
+    public boolean checkString(String inputStr) {
+        inputStr = inputStr.replaceAll("\\s", "");
+
+        if(!inputStr.isBlank() && inputStr != null && inputStr.chars().allMatch(Character::isLetter)) {
+            createMap(inputStr);
         } else return false;
         return true;
     }
 
-    public void createMap(String str) {
-        char[] chars = str.toCharArray();
+    public void createMap(String inputStr) {
+        char[] chars = inputStr.toCharArray();
         Map<Character, Integer> map = new HashMap<>();
         for(Character k : chars) {
             if(!map.containsKey(k)) {
