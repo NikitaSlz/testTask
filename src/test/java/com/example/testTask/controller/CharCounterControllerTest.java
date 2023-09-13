@@ -15,7 +15,11 @@ public class CharCounterControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    //Тесты на обработку Post запроса
+    /**
+     * Тесты на обработку Post запроса, в любом формате входных данных запрос обрабатывается и получает Ok статус.
+     *
+     * @throws Exception в случае ошибки
+     */
     @Test
     public void charCounterPost_InputValidString_OkStatusReturn() throws Exception {
         String string = "asasas";
@@ -27,6 +31,14 @@ public class CharCounterControllerTest {
     @Test
     public void charCounterPost_InputInvalidString_OkStatusReturn() throws Exception {
         String string = "123";
+        mockMvc.perform(post("/message")
+                        .content(string))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void charCounterPost_InputNullString_OkStatusReturn() throws Exception {
+        String string = "   ";
         mockMvc.perform(post("/message")
                         .content(string))
                 .andExpect(status().isOk());
