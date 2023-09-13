@@ -22,9 +22,6 @@ public class CharCounterController {
 
     @PostMapping
     public String inputStr(@RequestBody String inputStr) {
-        if (charCounterService.checkString(inputStr)) {
-            charCounterService.sort();
-            return charCounterService.toString();
-        } else return "vvedite stroku iz bukv";
+        return charCounterService.charCounter(inputStr);
     }
 }

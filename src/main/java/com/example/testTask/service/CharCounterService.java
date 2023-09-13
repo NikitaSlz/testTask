@@ -1,5 +1,9 @@
 package com.example.testTask.service;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -9,54 +13,53 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Map.Entry.*;
+
 @Service
+@Getter
+@NoArgsConstructor
+@Setter
 public class CharCounterService {
-    private Map<Character, Integer> map;
-    public CharCounterService() {
 
-    }
 
-    public Map<Character, Integer> getMap() {
-        return map;
-    }
-
-    public void setMap(Map<Character, Integer> map) {
-        this.map = map;
+    public String charCounter(String inputStr) {
+        if (checkString(inputStr)) {
+            Map<Character, Integer> map;
+            map = createMap(inputStr);
+            map = sortMap(map);
+            return toString(map);
+        }
+        return null;
     }
 
     public boolean checkString(String inputStr) {
         inputStr = inputStr.replaceAll("\\s", "");
 
-        if(!inputStr.isBlank() && inputStr != null && inputStr.chars().allMatch(Character::isLetter)) {
-            createMap(inputStr);
-        } else return false;
-        return true;
+        if (!inputStr.isBlank() && inputStr.chars().allMatch(Character::isLetter))
+            return true;
+        return false;
     }
 
-    public void createMap(String inputStr) {
+    public Map<Character, Integer> createMap(String inputStr) {
         char[] chars = inputStr.toCharArray();
         Map<Character, Integer> map = new HashMap<>();
-        for(Character k : chars) {
-            if(!map.containsKey(k)) {
+        for (Character k : chars) {
+            if (!map.containsKey(k))
                 map.put(k, 1);
-            } else if(map.containsKey(k)) {
-                map.put(k, map.get(k)+1);
-            }
+            map.put(k, map.get(k) + 1);
         }
-        setMap(map);
+        return map;
     }
 
-    public void sort() {
-        setMap(map.entrySet()
+    public Map<Character, Integer> sortMap(Map<Character, Integer> map) {
+        return map.entrySet()
                 .stream()
                 .sorted(comparingByValue(Comparator.reverseOrder()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new)));
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
-    @Override
-    public String toString() {
+    public String toString(Map<Character, Integer> map) {
         return map.keySet().stream()
-                .map(key -> key + ":" + map.get(key))
+                .map(key -> "\"" + key + "\"" + ":" + map.get(key))
                 .collect(Collectors.joining(", "));
     }
 }
