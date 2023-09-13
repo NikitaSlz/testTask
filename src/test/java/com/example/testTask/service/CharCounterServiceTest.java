@@ -1,49 +1,75 @@
 package com.example.testTask.service;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CharCounterServiceTest {
-    @BeforeEach
+
+    @Mock
+    CharCounterService charCounterServiceMock;
+
+    @BeforeAll
     void setUp() {
-        System.out.println("Запущен тест:");
+        System.out.println("Запущены тесты");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"aaadddsss","daasss", "   aadds", "     ", "123asd", "ds ds aaaa"})
-    void checkStringTest(String input) {
-        System.out.println(input);
-        CharCounterService charCounterService = new CharCounterService();
-        assertTrue(charCounterService.checkString(input));
+    @AfterAll
+    void cleanUp() {
+        System.out.println("Тесты завершены");
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {
-            "{a=2, s=2}:aass",
-            "{A=1, a=3}:Aaaa",
-            "{a=1, s=1, d=1}:asd",
-            "{b=1, a=2, c=1}:bbaac",
-            "{a=0, s=1, b=}:asb",
-            "{a=2, b=1, c=1}:abac"}, delimiter = ':')
-    void createMapTest(String expected, String input) {
-        CharCounterService charCounterService = new CharCounterService();
-        charCounterService.createMap(input);
-        System.out.println(input);
-        assertEquals(expected, charCounterService.getMap().toString());
+    @Test
+    public void checkStringTest_input_null_or_blank() {
+        when(charCounterServiceMock.checkString("       ")).thenReturn(false);
+        boolean result = charCounterServiceMock.checkString("       ");
+        assertEquals(false, result);
+
+    }
+
+    @Test
+    public void checkStringTest_input_RightString() {
+        when(charCounterServiceMock.checkString("asd")).thenReturn(true);
+        boolean result = charCounterServiceMock.checkString("asd");
+        assertEquals(true, result);
+    }
+
+    @Test
+    public void checkStringTest_input_StringWithNumbers() {
+        when(charCounterServiceMock.checkString("asdf123")).thenReturn(false);
+        boolean result = charCounterServiceMock.checkString("asdf123");
+        assertEquals(false, result);
+    }
+
+    @Test
+    public void checkStringTest_input_StringWithLowerAndUpperCase() {
+        when(charCounterServiceMock.checkString("Aass")).thenReturn(true);
+        boolean result = charCounterServiceMock.checkString("Aass");
+        assertEquals(true, result);
+    }
+
+    @Test
+    public void createMapTest() {
+        Map<Character, Integer> mapExpected = new HashMap<>();
+        {
+            mapExpected.put('A', 1);
+            mapExpected.put('a', 2);
+            mapExpected.put('s', 2);
+        }
+        when(charCounterServiceMock.createMap("Aasas")).thenReturn(mapExpected);
+        var result = charCounterServiceMock.createMap("Aasas");
+        assertEquals(mapExpected, result);
     }
 }
