@@ -15,9 +15,7 @@ import java.util.stream.Collectors;
 import static java.util.Map.Entry.*;
 
 @Service
-@Getter
 @NoArgsConstructor
-@Setter
 public class CharCounterService {
 
 
