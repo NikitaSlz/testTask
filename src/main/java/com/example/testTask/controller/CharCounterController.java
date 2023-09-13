@@ -2,6 +2,7 @@ package com.example.testTask.controller;
 
 import com.example.testTask.service.CharCounterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.ExpressionException;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -15,13 +16,12 @@ public class CharCounterController {
         this.charCounterService = charCounterService;
     }
 
-    @GetMapping
-    public String inputStr() {
-        return "vvedite stroku iz bukv";
-    }
 
     @PostMapping
     public String inputStr(@RequestBody String inputStr) {
-        return charCounterService.charCounter(inputStr);
+        String result = charCounterService.charCounter(inputStr);
+        if (!result.isBlank())
+            return result;
+        return "Неверный формат входных данных";
     }
 }

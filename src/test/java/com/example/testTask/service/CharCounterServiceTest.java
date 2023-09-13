@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 class CharCounterServiceTest {
 
     @Mock
-    CharCounterService charCounterServiceMock;
+    private CharCounterService charCounterServiceMock;
 
     @BeforeAll
     void setUp() {
@@ -31,6 +31,9 @@ class CharCounterServiceTest {
         System.out.println("Тесты завершены");
     }
 
+    //Тесты для метода проверки строки
+
+    //Строка пустая или из пробелов
     @Test
     public void checkStringTest_input_null_or_blank() {
         when(charCounterServiceMock.checkString("       ")).thenReturn(false);
@@ -39,6 +42,7 @@ class CharCounterServiceTest {
 
     }
 
+    //Тест валидной строки
     @Test
     public void checkStringTest_input_RightString() {
         when(charCounterServiceMock.checkString("asd")).thenReturn(true);
@@ -46,6 +50,7 @@ class CharCounterServiceTest {
         assertEquals(true, result);
     }
 
+    //Тест строки с цифрами вместо буквенных символов
     @Test
     public void checkStringTest_input_StringWithNumbers() {
         when(charCounterServiceMock.checkString("asdf123")).thenReturn(false);
@@ -53,6 +58,7 @@ class CharCounterServiceTest {
         assertEquals(false, result);
     }
 
+    //Тест строки с символами разных регистров
     @Test
     public void checkStringTest_input_StringWithLowerAndUpperCase() {
         when(charCounterServiceMock.checkString("Aass")).thenReturn(true);
@@ -60,6 +66,15 @@ class CharCounterServiceTest {
         assertEquals(true, result);
     }
 
+    //Тест на длинную строку, больше 10 символов
+    @Test
+    public void checkStringTest_input_StringIsToLong() {
+        when(charCounterServiceMock.checkString("Aasswssssssssssssssssss")).thenReturn(false);
+        boolean result = charCounterServiceMock.checkString("Aasswssssssssssssssssss");
+        assertEquals(false, result);
+    }
+
+    //Тесты создания map из строки
     @Test
     public void createMapTest() {
         Map<Character, Integer> mapExpected = new HashMap<>();

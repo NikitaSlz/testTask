@@ -26,18 +26,20 @@ public class CharCounterService {
             map = sortMap(map);
             return toString(map);
         }
-        return null;
+        return " ";
     }
 
-    public boolean checkString(String inputStr) {
+    //Проверка строки на валидность: состоит только из букв, не нулевая и ее длина меньше 10
+    boolean checkString(String inputStr) {
         inputStr = inputStr.replaceAll("\\s", "");
 
-        if (!inputStr.isBlank() && inputStr.chars().allMatch(Character::isLetter))
+        if (!inputStr.isBlank() && inputStr.length() < 10 && inputStr.chars().allMatch(Character::isLetter))
             return true;
         return false;
     }
 
-    public Map<Character, Integer> createMap(String inputStr) {
+    //Создание map на основе входной строки с подсчетом вхождения символов
+    Map<Character, Integer> createMap(String inputStr) {
         char[] chars = inputStr.toCharArray();
         Map<Character, Integer> map = new HashMap<>();
         for (Character k : chars) {
@@ -48,14 +50,16 @@ public class CharCounterService {
         return map;
     }
 
-    public Map<Character, Integer> sortMap(Map<Character, Integer> map) {
+    //Сортировка map по значению ключей
+    Map<Character, Integer> sortMap(Map<Character, Integer> map) {
         return map.entrySet()
                 .stream()
                 .sorted(comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
-    public String toString(Map<Character, Integer> map) {
+    //Преобразование map в строку
+    String toString(Map<Character, Integer> map) {
         return map.keySet().stream()
                 .map(key -> "\"" + key + "\"" + ":" + map.get(key))
                 .collect(Collectors.joining(", "));
