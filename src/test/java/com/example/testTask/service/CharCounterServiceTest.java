@@ -4,22 +4,15 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CharCounterServiceTest {
 
-    @Mock
-    private CharCounterService charCounterServiceMock;
+
+    private final CharCounterService charCounterService = new CharCounterService();
 
     @BeforeAll
     void setUp() {
@@ -31,60 +24,46 @@ class CharCounterServiceTest {
         System.out.println("Тесты завершены");
     }
 
-    //Тесты для метода проверки строки
-
-    //Строка пустая или из пробелов
+    /**
+     * Тесты charCounter для различных входных данных
+     */
     @Test
-    public void checkStringTest_input_null_or_blank() {
-        when(charCounterServiceMock.checkString("       ")).thenReturn(false);
-        boolean result = charCounterServiceMock.checkString("       ");
-        assertEquals(false, result);
-
+    public void charCounterServiceTest_ValidString_One() {
+        String inputStr = "aaa";
+        String expected = "\"a\": 3";
+        String result = charCounterService.charCounter(inputStr);
+        assertEquals(expected, result);
     }
 
-    //Тест валидной строки
     @Test
-    public void checkStringTest_input_RightString() {
-        when(charCounterServiceMock.checkString("asd")).thenReturn(true);
-        boolean result = charCounterServiceMock.checkString("asd");
-        assertEquals(true, result);
+    public void charCounterServiceTest_ValidString_Two() {
+        String inputStr = "ddaaa";
+        String expected = "\"a\": 3, \"d\": 2";
+        String result = charCounterService.charCounter(inputStr);
+        assertEquals(expected, result);
     }
 
-    //Тест строки с цифрами вместо буквенных символов
     @Test
-    public void checkStringTest_input_StringWithNumbers() {
-        when(charCounterServiceMock.checkString("asdf123")).thenReturn(false);
-        boolean result = charCounterServiceMock.checkString("asdf123");
-        assertEquals(false, result);
+    public void charCounterServiceTest_InvalidString_WithNumbers() {
+        String inputStr = "123";
+        String expected = " ";
+        String result = charCounterService.charCounter(inputStr);
+        assertEquals(expected, result);
     }
 
-    //Тест строки с символами разных регистров
     @Test
-    public void checkStringTest_input_StringWithLowerAndUpperCase() {
-        when(charCounterServiceMock.checkString("Aass")).thenReturn(true);
-        boolean result = charCounterServiceMock.checkString("Aass");
-        assertEquals(true, result);
+    public void charCounterServiceTest_InvalidString_NullOrBlank() {
+        String inputStr = "      ";
+        String expected = " ";
+        String result = charCounterService.charCounter(inputStr);
+        assertEquals(expected, result);
     }
 
-    //Тест на длинную строку, больше 10 символов
     @Test
-    public void checkStringTest_input_StringIsToLong() {
-        when(charCounterServiceMock.checkString("Aasswssssssssssssssssss")).thenReturn(false);
-        boolean result = charCounterServiceMock.checkString("Aasswssssssssssssssssss");
-        assertEquals(false, result);
-    }
-
-    //Тесты создания map из строки
-    @Test
-    public void createMapTest() {
-        Map<Character, Integer> mapExpected = new HashMap<>();
-        {
-            mapExpected.put('A', 1);
-            mapExpected.put('a', 2);
-            mapExpected.put('s', 2);
-        }
-        when(charCounterServiceMock.createMap("Aasas")).thenReturn(mapExpected);
-        var result = charCounterServiceMock.createMap("Aasas");
-        assertEquals(mapExpected, result);
+    public void charCounterServiceTest_InvalidString_WithDifferentCase() {
+        String inputStr = "AsD";
+        String expected = "\"A\": 1, \"s\": 1, \"D\": 1";
+        String result = charCounterService.charCounter(inputStr);
+        assertEquals(expected, result);
     }
 }
